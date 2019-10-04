@@ -24,7 +24,7 @@
     <ClCompile Include="Example3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Exercise03.cpp">
+    <ClCompile Include="GAME1001_Exercise03_Bacon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
