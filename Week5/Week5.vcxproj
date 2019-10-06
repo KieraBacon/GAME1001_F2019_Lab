@@ -119,6 +119,7 @@
     <ClCompile Include="Example2.cpp" />
     <ClCompile Include="Example3.cpp" />
     <ClCompile Include="GAME1001_Exercise03_Bacon.cpp" />
+    <ClCompile Include="GAME1007_Lab2_BaconKiera.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

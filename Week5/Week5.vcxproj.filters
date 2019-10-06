@@ -27,5 +27,8 @@
     <ClCompile Include="GAME1001_Exercise03_Bacon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GAME1007_Lab2_BaconKiera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

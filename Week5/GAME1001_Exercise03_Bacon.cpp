@@ -10,6 +10,7 @@ Senior is 65+ and is 0.8x normal price (option 3)
 Give an option to exit (option 4)
 Based on their selection, output the price of their selected ticket
 -----------------------------------------------------------------*/
+/*
 #include <iostream>
 #include <iomanip>
 using namespace std;
@@ -106,3 +107,4 @@ int main()
 	system("pause");
 	return 0;
 }
+*/
