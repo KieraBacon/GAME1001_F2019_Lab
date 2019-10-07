@@ -1,2 +1,2 @@
 ﻿  GAME1007_Lab2_BaconKiera.cpp
-  Week5.vcxproj -> C:\Users\Allarielle\source\repos\GAME1001_F2019_Lab\Debug\Week5.exe
+LINK : fatal error LNK1561: entry point must be defined
