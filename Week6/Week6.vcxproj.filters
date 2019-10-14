@@ -18,5 +18,11 @@
     <ClCompile Include="VidExample01.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GAME1001_LabTest2A_BaconKiera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GAME1001_Exercise04_BaconKiera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
