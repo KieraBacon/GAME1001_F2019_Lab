@@ -46,6 +46,7 @@ Submission : Filenames : GAME1001_A1_Lastname1_Lastname2.cpp
 #include <fstream>					// Used for reading and writing user validation.
 #include <Windows.h>				// Used for Sleep() and textCol().
 using namespace std;
+const short STRINPUTLIMITS[2] = { 3,10 };
 
 /*-------------------------Enumeration for the data type of all user input.-------------------------*/
 enum rps { rock, paper, scissors, cross };
@@ -60,7 +61,7 @@ void textCol(int colour, string text)
 }
 
 /*------------Validate a given string input and convert it into an enumerated RPS output.-----------*/
-rps rpsInput(string init = "Enter your selection: ", string invalid = "Invalid input, please try again: ")
+rps rpsInput(string init = "Enter your selection [1-4]: ", string invalid = "Invalid input, please try again [1-4]: ")
 {											// General function for checking input validation and converting it to the game's language.
 	bool valid = false;						// Validation flag.
 	string input;
@@ -96,29 +97,29 @@ rps rpsInput(string init = "Enter your selection: ", string invalid = "Invalid i
 }
 
 /*-----------------Validate a new string input for username or password conditions.-----------------*/
-string textInput(string firstPrompt = "Enter your input [3-10 characters]: ", string secondPrompt = "Invalid input, please try again: ")
+string textInput(string firstPrompt = "Enter your input", string secondPrompt = "Invalid input, please try again")
 {
 	string input;
 	bool valid = false;								// Validation flag for verifying valid text input.
-	cout << firstPrompt;							// Prints the prompt text supplied by the calling function.
+	cout << firstPrompt << "[" << STRINPUTLIMITS[0] << "-" << STRINPUTLIMITS[1] << " characters]: ";			// Prints the prompt text supplied by the calling function.
 	do												// Continues to loop until a valid input is entered.
 	{
 		cin >> input;
 		cin.ignore(INT_MAX, '\n');
-		if (input.length() >= 3 && input.length() <= 10) // Checks input text meets conditions.
+		if (input.length() >= STRINPUTLIMITS[0] && input.length() <= STRINPUTLIMITS[1]) // Checks input text meets conditions.
 		{
 			valid = true;
 		}
 		else
 		{
-			cout << secondPrompt;					// If user input is invalid, prints error text supplied by calling function.
+			cout << secondPrompt << "[" << STRINPUTLIMITS[0] << "-" << STRINPUTLIMITS[1] << " characters]: ";	// If user input is invalid, prints error text supplied by calling function.
 		}
 	} while (!valid);
 	return input;
 }
 
 /*---------Locate a given username in the data file and return its corresponding password.----------*/
-short findID(string searchID, string* checkPW = NULL)
+short findID(string searchID, string* checkPW, int pStats[] = nullptr)
 {
 	string checkID;									// String for the username which is read from the file.
 	bool foundID = false;							// Checks whether the function found what it was looking for, becomes true if so.
@@ -131,7 +132,7 @@ short findID(string searchID, string* checkPW = NULL)
 	}
 	while (!inFile.eof())							// Loops through the data file until it finds the string that was passed into the function.
 	{
-		!checkPW ? inFile >> checkID : inFile >> checkID >> *checkPW;
+		!pStats ? inFile >> checkID >> *checkPW : inFile >> checkID >> *checkPW >> pStats[0] >> pStats[1] >> pStats[2] >> pStats[3] >> pStats[4] >> pStats[5] >> pStats[6] >> pStats[7] >> pStats[8];
 		if (searchID == checkID)					// If it matches the username read from the file with the username input from the user, it breaks the loop.
 		{
 			foundID = true;
@@ -144,7 +145,7 @@ short findID(string searchID, string* checkPW = NULL)
 }
 
 /*----------------Create a new user profile if a matching one does not already exist.---------------*/
-short newProfile(string &playerName)
+short newProfile(string &pName)
 {
 	bool newUser = false;							// Flag which states whether or not the username checked is new.
 	string searchID, checkID, newPW;
@@ -152,8 +153,8 @@ short newProfile(string &playerName)
 	cout << "Create a new profile." << endl << endl;
 	do												// Continues to loop until a new profile has been successfully created.
 	{
-		searchID = textInput("Enter your username [3-10 characters]: ", "Invalid username, please try again: ");	// Calls textInput() to validate username input.
-		switch (findID(searchID))					// Calls findID() to check if the inputted username exists.
+		searchID = textInput("Enter your username", "Invalid username, please try again");	// Calls textInput() to validate username input.
+		switch (findID(searchID, &newPW))			// Calls findID() to check if the inputted username exists.
 		{
 		case 0: newUser = true; break;
 		case -3: return -3;
@@ -174,18 +175,18 @@ short newProfile(string &playerName)
 				return -3;
 			}
 			bool valid = false;						// Validation flag for password input.
-			newPW = textInput("Enter your password [3-10 characters]: ", "Invalid password, please try again: ");	// Calls textInput() to validate password input.
+			newPW = textInput("Enter your password", "Invalid password, please try again");	// Calls textInput() to validate password input.
 			cout << endl << "Saving user \"" << searchID << "\" with password \"" << newPW << "\" to file..." << endl;
-			outFile << endl << searchID << ' ' << newPW;	// Outputs the data to the data file.
+			outFile << endl << searchID << ' ' << newPW << " 0 0 0 0 0 0 0 0 0";	// Outputs the data to the data file.
 			outFile.close();						// The data file must be closed before the function terminates.
-			playerName = searchID;					// Finally, saves the player's name as the new name which was entered.
+			pName = searchID;					// Finally, saves the player's name as the new name which was entered.
 		}
 	} while (!newUser);								// Continues to loop until a new user profile has been successfully created.
 	return 0;
 }
 
 /*-------------------------------Log in to an existing user profile.--------------------------------*/
-short logIn(string &playerName)
+short logIn(string &pName, int pStats[])
 {
 	bool matchUser = false;							// Flag which states whether or not the username checked matches one in the data file.
 	string searchID, searchPW, checkPW;
@@ -194,8 +195,8 @@ short logIn(string &playerName)
 	do												// Continues to loop until the player has successfully logged in.
 	{
 		short foundID = 0;							// Flag to verify wheather a previously existing ID was found.
-		searchID = textInput("Enter your username: ", "Invalid username, please try again: ");
-		foundID = findID(searchID, &checkPW);		// Calls findID() to check the inputted username, and if found, saves the associated password.
+		searchID = textInput("Enter your username", "Invalid username, please try again");
+		foundID = findID(searchID, &checkPW, pStats);	// Calls findID() to check the inputted username, and if found, saves the associated password.
 		if(foundID == -3)							// If the datafile failed the open, the error should cascade back.
 		{
 			return -3;
@@ -203,14 +204,14 @@ short logIn(string &playerName)
 		else if (foundID == 1)						// If the username was found, enters a short sequence to determined if the password matches.
 		{
 			Sleep(400);
-			searchPW = textInput("Matching username found. Enter your password: ", "Invalid password, please try again: ");
+			searchPW = textInput("Matching username found. Enter your password", "Invalid password, please try again");
 			if (searchPW == checkPW)				// If the password entered matches the one previously saved from the data file, begin exiting the loop.
 			{
 				Sleep(400);
 				cout << endl;
 				cout << "Logging in..." << endl;
 				Sleep(800);
-				playerName = searchID;				// Sets the player's name to the saved username from the data file.
+				pName = searchID;					// Sets the player's name to the saved username from the data file.
 				matchUser = true;					// Sets the flag to allow the loop to exit.
 			}
 			else									// If the password doesn't match, allows the loop to reset back to the start with inputting the username. 
@@ -255,24 +256,24 @@ void credits()
 }
 
 /*-----------------------------------Display the current scores.------------------------------------*/
-void scoreboard(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, int& pPpr, int& pScr, int& cWin, int& cLos, int& cTie, int& cRoc, int& cPpr, int& cScr, short detail = 0)
+void scoreboard(string& pName, int pStats[], int cStats[])
 {
 	cout << "Current Score:" << endl;
 	Sleep(200);
 	cout << endl;
-	cout << "Name: " << playerName << " Rounds: " << pWin+pLos+pTie << endl;
-	cout << "Wins: " << pWin << " Losses: " << pLos << " Ties: " << pTie << endl;
-	cout << "Rocks: " << pRoc << " Papers: " << pPpr << " Scissors: " << pScr << endl;
+	cout << "Name: " << pName << " Rounds: " << pStats[0] + pStats[1] + pStats[2] + pStats[3] + pStats[4] + pStats[5] + pStats[6] + pStats[7] + pStats[8] << endl;
+	cout << "Wins: " << pStats[0] + pStats[3] + pStats[6] << " Losses: " << pStats[1] + pStats[4] + pStats[7] << " Ties: " << pStats[2] + pStats[5] + pStats[8] << endl;
+	cout << "Rocks: " << pStats[0] + pStats[1] + pStats[2] << " Papers: " << pStats[3] + pStats[4] + pStats[5] << " Scissors: " << pStats[6] + pStats[7] + pStats[8] << endl;
 	cout << endl;
-	cout << "Name: " << "Computer" << " Rounds: " << cWin + cLos + cTie << endl;
-	cout << "Wins: " << cWin << " Losses: " << cLos << " Ties: " << cTie << endl;
-	cout << "Rocks: " << cRoc << " Papers: " << cPpr << " Scissors: " << cScr << endl;
+	cout << "Name: " << "Computer" << " Rounds: " << cStats[0] + cStats[1] + cStats[2] + cStats[3] + cStats[4] + cStats[5] + cStats[6] + cStats[7] + cStats[8] << endl;
+	cout << "Wins: " << cStats[0] + cStats[3] + cStats[6] << " Losses: " << cStats[1] + cStats[4] + cStats[7] << " Ties: " << cStats[2] + cStats[5] + cStats[8] << endl;
+	cout << "Rocks: " << cStats[0] + cStats[1] + cStats[2] << " Papers: " << cStats[3] + cStats[4] + cStats[5] << " Scissors: " << cStats[6] + cStats[7] + cStats[8] << endl;
 	cout << endl;
 	system("pause");
 }
 
 /*-----------------------------------------Core game loop.------------------------------------------*/
-short gameLoop(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, int& pPpr, int& pScr, int& cWin, int& cLos, int& cTie, int& cRoc, int& cPpr, int& cScr)
+short gameLoop(string& pName, int pStats[], int cStats[])
 {
 	rps input;
 
@@ -290,7 +291,7 @@ short gameLoop(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, i
 		cout << "[3]"; textCol(4, "SCISSORS"); cout << " / ";
 		cout << "[4]"; textCol(5, "CROSS"); cout << " (Return to the main menu)" << endl;
 		
-		string playerPrompt = playerName + ": ";		// Display the player's name when making a guess.
+		string playerPrompt = pName + ": ";		// Display the player's name when making a guess.
 		input = rpsInput(playerPrompt);
 		
 		// Check each of the nine different potential outcomes and both print the result, and save it to a variable for later reference.
@@ -314,7 +315,7 @@ short gameLoop(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, i
 		else if (input == 3)							// Player can exit at any point.
 		{
 			cout << "Thank you for playing!" << endl;
-			cout << "Your final score as " << playerName << " was: " << pWin - pLos << "." << endl;
+			cout << "Your final score as " << pName << " was: " << pWin - pLos << "." << endl;
 			cout << "Wins: " << pWin << " Losses: " << pLos << " Ties: " << pTie << ". Rounds played: " << pWin+pLos+pTie << endl << endl;
 			system("pause");
 			break;
@@ -323,7 +324,7 @@ short gameLoop(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, i
 		
 		Sleep(400);
 		cout << endl;
-		cout << playerName << "\'s score: Wins: " << pWin << " Losses: " << pLos << " Ties: " << pTie << endl << endl << endl;
+		cout << pName << "\'s score: Wins: " << pWin << " Losses: " << pLos << " Ties: " << pTie << endl << endl << endl;
 		
 		Sleep(300);
 	} while (!exitGame);
@@ -331,7 +332,7 @@ short gameLoop(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, i
 }
 
 /*--------------------------------------------Main menu.--------------------------------------------*/
-short mainMenu(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, int& pPpr, int& pScr, int& cWin, int& cLos, int& cTie, int& cRoc, int& cPpr, int& cScr)
+short mainMenu(string& pName, int pStats[], int cStats[])
 {
 	rps input;
 
@@ -350,15 +351,18 @@ short mainMenu(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, i
 	{
 	case 0:
 		printRules();
-		pWin = 0; pLos = 0; pTie = 0; pRoc = 0; pPpr = 0; pScr = 0;
-		cWin = 0; cLos = 0; cTie = 0; cRoc = 0; cPpr = 0; cScr = 0;
-		gameLoop(playerName, pWin, pLos, pTie, pRoc, pPpr, pScr, cWin, cLos, cTie, cRoc, cPpr, cScr);
+		for (int i = 0; 0 < 8; i++)
+		{
+			pStats[i] = 0;
+			cStats[i] = 0;
+		}
+		gameLoop(pName, pStats, cStats);
 		return 0;
 	case 1:
-		gameLoop(playerName, pWin, pLos, pTie, pRoc, pPpr, pScr, cWin, cLos, cTie, cRoc, cPpr, cScr);
+		gameLoop(pName, pStats, cStats);
 		return 1;
 	case 2:
-		scoreboard(playerName, pWin, pLos, pTie, pRoc, pPpr, pScr, cWin, cLos, cTie, cRoc, cPpr, cScr);
+		scoreboard(pName, pStats, cStats);
 		return 2;
 	case 3:
 		cout << "Logging out..." << endl;
@@ -370,11 +374,9 @@ short mainMenu(string& playerName, int& pWin, int& pLos, int& pTie, int& pRoc, i
 }
 
 /*-------------------------------------------Login menu.--------------------------------------------*/
-short logInMenu(string& playerName)
+short logInMenu(string& pName, int pStats[], int cStats[])
 {
 	rps input;
-	int pWin = 0, pLos = 0, pTie = 0, pRoc = 0, pPpr = 0, pScr = 0;
-	int cWin = 0, cLos = 0, cTie = 0, cRoc = 0, cPpr = 0, cScr = 0;
 
 	cout << endl << "loading login screen...";
 	Sleep(1600);
@@ -390,10 +392,10 @@ short logInMenu(string& playerName)
 	switch (input)
 	{
 	case 0:
-		logIn(playerName);
+		logIn(pName, pStats);
 		break;
 	case 1:
-		newProfile(playerName);
+		newProfile(pName);
 		return 1;
 	case 2:
 		credits();
@@ -410,7 +412,7 @@ short logInMenu(string& playerName)
 		short mainMenuReturn = 0;
 		do
 		{
-			mainMenuReturn = mainMenu(playerName, pWin, pLos, pTie, pRoc, pPpr, pScr, cWin, cLos, cTie, cRoc, cPpr, cScr);
+			mainMenuReturn = mainMenu(pName, pStats, cStats);
 			if (mainMenuReturn == -2) return -2;
 			else if (mainMenuReturn == -3) return -3;
 		} while (mainMenuReturn >= 0);
@@ -422,8 +424,10 @@ short logInMenu(string& playerName)
 /*---------------------------------------Program entry point.---------------------------------------*/
 int main()
 {
-	string playerName = "Default";
 	srand((unsigned)time(NULL));		// Initialize the random seed.
+	string pName = "Default";
+	int pStats[9] = { 0,0,0,0,0,0,0,0,0 };
+	int cStats[9] = { 0,0,0,0,0,0,0,0,0 };
 
 	cout << "GAME1001_A1_BaconKiera" << endl;
 	cout << "Rock, Paper, Scissors" << endl;
@@ -435,12 +439,11 @@ int main()
 	short logInMenuReturn = 0;
 	do
 	{
-		logInMenuReturn = logInMenu(playerName);
+		logInMenuReturn = logInMenu(pName, pStats, cStats);
 		switch (logInMenuReturn)
 		{
 		case -1:
 			system("pause");
-			return -1;
 		case -2:
 			cout << "Exception in menu handling system." << endl;
 			system("pause");

@@ -1,4 +1,4 @@
-Admin Admin
-Maint Maint
-Diag Diag
-User User
+Admin Admin 0 0 0 0 0 0 0 0 0
+Maint Maint 0 0 0 0 0 0 0 0 0
+Diag Diag 0 0 0 0 0 0 0 0 0
+User User 0 0 0 0 0 0 0 0 0
