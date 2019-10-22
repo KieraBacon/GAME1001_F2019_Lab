@@ -115,7 +115,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Week6\GAME1001_A1_BaconKiera.cpp" />
+    <ClCompile Include="..\Week6\GAME1001_A1_BaconKiera_Full.cpp" />
+    <ClCompile Include="GAME1001_A1_BaconKiera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="HighlySecureUserData.txt" />

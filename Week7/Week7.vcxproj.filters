@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Week6\GAME1001_A1_BaconKiera.cpp">
+    <ClCompile Include="..\Week6\GAME1001_A1_BaconKiera_Full.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GAME1001_A1_BaconKiera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
