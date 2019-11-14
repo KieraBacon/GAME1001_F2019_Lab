@@ -276,7 +276,6 @@
 //	cout << "Log in to an existing profile." << endl << endl;
 //	do												// Continues to loop until the player has successfully logged in.
 //	{
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~check foundID for how it gets used!!!!!~~~~~~~~~~~~~~~~~~~~~
 //		short foundID = 0;							// Flag to verify wheather a previously existing ID was found.
 //		searchID = textInput("Enter your username", "Invalid username, please try again", true, 1, 8, 16, 
 //			"Must be [8-16 characters], start with a [letter or numeral],",
